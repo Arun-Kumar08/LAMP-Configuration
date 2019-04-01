@@ -27,7 +27,7 @@ There are three distinct steps in this process:
 The configure script is responsible for getting ready to build the software on your specific system. It makes sure all of the dependencies for the rest of the build and install process are available, and finds out whatever it needs to know to use those dependencies.
 UNIX programs are often written in C, so we’ll usually need a C compiler to build them. In these cases the configure script will establish that your system does indeed have a C compiler, and find out what it’s called and where to find it.
 
-In some cases you need to run ./BUILD/autorun.sh script to get configure file.
+    In some cases you need to run ./BUILD/autorun.sh script to get configure file.
 
 
 2.	Build the software
