@@ -1,0 +1,334 @@
+1)	Install Linux 7.0  
+
+2)	HTTPD Configuration steps 
+
+(Post installation procedures)
+Before httpd installation need to install these packages using source code
+
+Apr 1.6.5
+Apr-utils 1.6.1
+Pcre-8.38
+
+Download source codes tar files for above packages and extract in “/files” (/files= a directory created to store all source files. can use any)
+
+PCRE installation
+
+ The PCRE (Perl compatible regular expressions) library is a set of functions that implement regular expression pattern matching using the same syntax and semantics as Perl 5. PCRE has its own native API, as well as a set of wrapper functions that correspond to the POSIX regular expression API. The PCRE library is free, even for building proprietary software.
+
+ mkdir  /files/pcre                    
+ cd /files/pcre
+
+download pcre-8.38  from this location and paste inside /files/pcre/ https://ftp.pcre.org/pub/pcre/
+
+tar xfj pcre-8.38.tar.bz2             (extract files)
+ cd  pcre-8.38.tar.bz2
+
+(now execute ./configure )
+
+./configure
+
+(error will show like “you need c++ compiler for c++ support”
+Install “gcc-c++” package then execute configure)
+
+yum install  -y gcc-c++
+
+./configure     (if no error execute make & make install)
+make
+make install
+
+(Using same method install pcre2.10.32 also if shows any error)
+
+APR Installation
+ The Apache Portable Runtime (APR) is a supporting library for the Apache web server. It provides a set of API’S that map to the underlying operating system (OS). Where the OS does not support a particular function, APR will provide an emulation. Thus programmers can use the APR to make a program truly portable across platforms.
+
+mkdir /files/APR
+cd /files/APR
+
+download apr-1.6.5  from this location and paste inside /files/apr/ “http://apr.apache.org/download.cgi”
+
+tar xfj apr-1.6.5.tar.bz2
+cd  apr-1.6.5
+
+./configure
+(if show libtool error install libtool package)
+
+yum install –y libtool
+make
+make install
+
+APR-UTILS Installaton
+
+APR-util provides a number of helpful abstractions on top of APR
+
+mkdir  /files/APR-Utils
+cd  /files/APR-Utils
+
+download apr-utils-1.6.1 from this location and paste inside /files/APR-Utils/  “http://apr.apache.org/download.cgi”
+
+ tar xfj apr-utils-1.6.1.tar.bz2
+ cd apr-utils-1.6.1	
+ ./configure   --with-apr=/usr/local/apr
+ make
+
+(if  xml/apr_xml fatal error then install “expat-devel” package then make)
+
+make install
+
+HTTPD-2.4 Installation 
+
+Download apache 2.4 source code tar file  and extract in new path(in here “/files/httpd/”.
+
+mkdir –p /files/httpd
+cd  /fil	es/httpd
+
+Download apache-2.4.38.tar.bz2 from this location and paste inside /files/httpd/  “http://httpd.apache.org/download.cgi#apache24”
+
+tar xfj  httpd-2.4.38.tar.bz2
+cd httpd-2.4.38
+./configure
+make
+make install
+
+(then configure httpd.conf file as per requirement)
+
+vim /usr/local/apache2/conf/httpd.conf
+
+(Then restart service apachectl(“/usr/local/apache2/bin/apachectl “)
+to create apachectl as a command make a link to above path)
+
+/usr/local/apache2/bin/apachectl start
+
+Then 
+
+ln –s  /usr/local/apache2/bin/apachectl start   /usr/local/sbin/apachectl
+apachectl start
+
+make a  file as index.html inside default document root         (“/usr/local/apache2/htdocs”)
+
+vim  /usr/local/apache2/htdocs/index.html 
+curl desktop1.example.com
+or 
+curl  servername 
+
+
+3)	PHP Installation
+
+Download php-5.5.37.tar.bz2 from this location and paste inside /files/PHP/  https://www.php.net/releases/
+
+mkdir /files/PHP
+cd /files/PHP
+tar xfj php-5.5.37.tar.bz2
+cd php-5.5.37
+
+(then execute configure)
+
+./configure  –with-apxs2=/usr/local/apache2/bin/apxs  --with-mysql
+
+(If xml error occurs then install  “libxml2-devel” package then re execute ./configure)
+
+./configure  –with-apxs2=/usr/local/apache2/bin/apxs  --with-mysql
+make
+make test
+make install
+
+(edit /usr/local/apache2/conf/httpd.conf and enter below entry in Addtype”
+
+AddType application/x-httpd-php   .php
+
+(Then in directory index edit as follows)
+
+<IfModule  dir_module>
+DirectoryIndex index.php  index.html
+<IfModule>
+
+(save file)
+ 
+create a file as index.php inside “/usr/local/apache2/htdocs/”
+
+vim  /usr/local/apache2/htdocs/index.php  
+
+( type file content then save file and restart apachectl service)
+
+apachectl restart
+
+curl desktop1.example.com
+
+(to see default php info page type below content inside index.php file
+
+<?php phpinfo(); ?>
+
+
+4)	MARIADB Installation
+ 
+Download  mariadb-10.2.22.tar.gz from this location https://mariadb.com/kb/en/library/getting-the-mariadb-source-code/
+And paste inside /files/Mariadb/ then extract file.
+
+mkdir /files/Mariadb
+cd /files/Mariadb
+tar xfz mariadb-10.2.22.tar.gz
+cd mariadb-10.2.22
+
+(Then need to run . /configure file, if there is no configure file then type below command to get configure file)
+
+./BUILD/autorun.sh
+
+(Before execute configure below packages need to be installed)*
+Libaio,libaio-devel,bison,bison-devel,zlib-devel,openssl,openssl-devel,ncurses,ncurses-devel,libcurl-devel,libarchive-devel,boost,boost-devel,lsof,wget,gcc,gcc-c++,make,cmake,perl,kernel-headers,kernel-devel,pcre-devel
+
+Yum install ()
+
+./configure
+make
+make install
+
+(Do following configurations to start mariadb)
+
+1)	( add user  and group in the name “mysql”)
+
+Useradd mysql
+Groupadd mysql
+
+2)	Change ownership of “/usr/local/mysql” to mysql
+
+  chown –R mysql:mysql /usr/local/mysql
+
+3)	Copy “/usr/local/mysql/support-files/my-small.cnf”  to /etc/my.cnf then Edit as per requirement change data directory if its changed default is /usr/local/mysql/data. 
+
+   cp /usr/local/mysql/support-files/my-small.cnf   /etc/my.cnf
+
+(Edit entries like below)
+
+  [mysqld]
+  basedir=/usr/local/mysql
+	datadir=/var/lib/mysql/
+  user=mysql
+
+4)	To check data directory error type below command and resolve error accordingly
+
+  /usr/local/mysql/bin/mysqld_safe   --user=mysql  --datadir=/var/lib/mysql/
+
+5)	To initialize system tables type command below
+  
+  /usr/local/mysql/scripts/mysql_install_db –user=mysql        --basedir=/usr/local/mysql
+
+6)	To start mariadb daemon 
+
+   /usr/local/mysql/bin/mysqld_safe    --datadir=/var/lib/mysql/
+
+8)	 To start Mariadb service
+
+  cd /usr/local/mysql/
+  ./support-files/mysql.server     start
+
+9)	To configure database security do below steps
+
+   cd /usr/local/mysql/
+  ./bin/mysql_secure_installation
+
+ Set root password =y
+ Remove anonymous users =y
+ Disallow root login remotely=y
+ Remove test database and access to it = y
+ Reload Privilege tables now = y
+
+10)	Create a link to  “/usr/local/mysql/bin/mysql”   “/usr/local/sbin/mysql“  ((this will make mysql as a command))
+
+  ln  –s   /usr/local/mysql/bin/mysql    /usr/local/sbin/mysql
+                  
+ 11)	To make mariadb service auto start on next reboot copy mysql.server    to  /etc/init.d/mysql
+
+  cp /usr/local/mysql/support-files/mysql.server  /etc/init.d/mysql
+
+(Give execute rights to file)
+
+  chmod  +x  /etc/init.d/mysql
+
+(For rpm based distributions (fedora, cent os , redhat use chkconfig command to add service)
+
+  chkconfig  –add  mysql 
+  chkconfig  --level  345 mysql on
+
+
+Create database and start LAMP Configuration
+
+(In here creating an html file which will accept “NAME” and “ID” as input while we click submit button it will redirect to a PHP Page which will show NAME and ID output and also store same data in a Mariadb Database)
+
+Creating database codes
+
+# mysql –u root –proot
+Mariadb[(none)]>  create database Employee_details;
+Mariadb[(none)]> use Employee_details;
+Mariadb[Employee_details]> create table data(NAME varchar(255),ID int (200));
+Mariadb[Employee_details]> describe data;
+
+
+(Now create an html file index.html for front end which has 2 input boxes and one submit button. output need to redirect into welcome.php file)
+Create an file index.html inside document root(/usr/local/apache2/htdocs/index.html) and type below code
+
+
+
+
+<html>
+<body>
+<form  action="welcome.php" method="post">
+NAME <input type="text" name="name"><br>
+ID <input type="text" name="id"><br>
+<input type="submit">
+</form>
+</body>
+</html>
+
+
+To redirect create a file welcome.php inside document root and type below commands. These commands will show output in php page and store that output into database.
+
+
+
+<html>
+<body>
+NAME IS : <?php echo $_POST["name"]; ?> <br>
+ID is : <?php echo $_POST["id"]; ?>
+
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "root";
+
+$conn = @mysql_connect($servername, $username, $password);
+mysql_select_db("Employee_Data");
+
+
+if (!$conn) {
+die("Database connection failed: " . mysql_error());
+}
+echo “<br>\n”;
+echo "Success Connected to database."; echo"\n";
+
+$sql=("INSERT INTO Details(NAME,ID)VALUES('$_POST[name]','$_POST[id]')");
+
+if (!mysql_query($sql,$conn))
+{
+die ('Error:' . mysql_error());
+}
+
+echo “<br>\n”;
+
+print ("Your Data has been added.");
+
+mysql_close($conn);
+?>
+
+</body>
+</html>
+
+
+
+
+(NOW Check output)
+
+LAMP CONFIGURATION COMPLETED
+
+
+
+ BY,
+  	ARUNKUMAR C
+               {ARK}
