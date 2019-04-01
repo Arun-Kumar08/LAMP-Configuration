@@ -45,11 +45,17 @@ Depending on where the software is being installed, you might need escalated per
 LOCAL INFRASTRUCTURE USED
 
 MACHINE: DELL Inspiron 14   Laptop
+
 CONFIG:  Core I3 2.00GHZ CPU, 4GB RAM, 1TB HDD
+
 OS:  REDHAT Linux el7.0, Kernel = 3.10
+
 Apache = Httpd 2.4
+
 Mariadb = Mariadb 10.2.22
+
 PHP = php 5.5
+
 
  Source code installation Steps
 
